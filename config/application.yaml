@@ -1,0 +1,41 @@
+server:
+  port: 9000
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://eureka:8761/eureka}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+spring:
+  application:
+    name: ms-catalog
+  datasource:
+    username: postgres
+    password: postgrespw
+    url: jdbc:postgresql://postgres:5432/SneakersDb
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    generate-ddl: true
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: riat-service
+            authorization-grant-type: authorization_code
+            scope: openid
+          provider:
+            keycloak:
+              user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://192.168.64.11:8080/realms/RiatServiceKeycloak
+          jwk-set-uri: http://192.168.64.11:8080/realms/RiatServiceKeycloak/protocol/openid-connect/certs
+  kafka:
+    producer:
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    bootstrap-server: kafka:9092
